@@ -1,0 +1,76 @@
+---
+title: "Exponential Distribution Simulation"
+author: "Maria Oros"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+```
+
+## Simulation Parameters
+
+```{r parameters}
+# Parameters
+lambda <- 0.2  # rate parameter of the exponential distribution
+n <- 40  # number of exponentials in each sample
+simulations <- 1000  # number of simulations
+
+# Theoretical mean and variance of the sample means
+theoretical_mean <- 1 / lambda
+theoretical_variance <- (1 / lambda)^2 / n  # Variance of the sample mean
+```
+
+## Simulation Results
+
+```{r simulation}
+# Set seed for reproducibility
+set.seed(123)
+
+# Simulate the data: 1000 simulations, each with 40 exponential values
+sample_means <- replicate(simulations, mean(rexp(n, lambda)))
+
+# Sample mean of the sample means
+mean_sample_means <- mean(sample_means)
+variance_sample_means <- var(sample_means)
+
+# Print results
+cat("Sample Mean of Sample Means:", mean_sample_means, "\n")
+cat("Variance of Sample Means:", variance_sample_means, "\n")
+cat("Theoretical Mean:", theoretical_mean, "\n")
+cat("Theoretical Variance:", theoretical_variance, "\n")
+```
+
+## Visualizations
+
+### Distribution of Sample Means
+
+```{r sample_means_plot}
+# Plot the distribution of sample means
+hist(sample_means, probability = TRUE, 
+     main = "Distribution of Sample Means",
+     xlab = "Sample Mean", 
+     col = "lightblue", 
+     border = "black")
+
+# Add the theoretical normal curve to the histogram
+curve(dnorm(x, mean = theoretical_mean, sd = sqrt(theoretical_variance)),
+      add = TRUE, col = "red", lwd = 2)
+```
+
+### Distribution of Individual Exponentials
+
+```{r individual_exponentials_plot}
+# Plot the distribution of individual exponentials
+individual_exponentials <- rexp(simulations * n, lambda)
+hist(individual_exponentials, probability = TRUE, 
+     main = "Distribution of Individual Exponentials",
+     xlab = "Exponential Value", 
+     col = "lightgreen", 
+     border = "black")
+```
+
+## Conclusion
+
+This simulation demonstrates the Central Limit Theorem for exponential distributions, showing how sample means converge to a normal distribution with the expected theoretical mean and variance.

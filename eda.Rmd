@@ -1,0 +1,43 @@
+---
+title: "Tooth Growth Dataset Exploration"
+author: "Maria Oros"
+date: "`r Sys.Date()`"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, warning = FALSE, message = FALSE)
+library(ggplot2)
+```
+
+## Data Loading
+```{r load_data}
+data("ToothGrowth")
+head(ToothGrowth)
+```
+
+## Visualization
+```{r visualization}
+ggplot(ToothGrowth, aes(x=factor(dose), y=len, fill=supp)) +
+  geom_boxplot() +
+  labs(x = "Dose", y = "Tooth Growth", title = "Tooth Growth by Dose and Supplement Type") +
+  theme_minimal()
+```
+
+## Statistical Analysis
+```{r t_tests}
+t_test_results <- lapply(unique(ToothGrowth$dose), function(dose_level) {
+  data_subset <- subset(ToothGrowth, dose == dose_level)
+  t.test(len ~ supp, data = data_subset)
+})
+print(t_test_results)
+```
+
+## Normality Check
+```{r normality_test}
+shapiro_test_results <- lapply(unique(ToothGrowth$dose), function(dose_level) {
+  data_subset <- subset(ToothGrowth, dose == dose_level)
+  shapiro.test(data_subset$len)
+})
+print(shapiro_test_results)
+```
